@@ -6,15 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>lijinhang</title>
+  <title>拆解Flask源码 -- &lt;4&gt; 静态文件和模板渲染 | lijinhang</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="lijinhang">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="flask对静态文件的处理依赖werkzeug提供的SharedDataMiddleware中间键，模板的渲染依赖jinja2提供的方法，都非常方便">
+<meta name="keywords" content="flask">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拆解Flask源码 -- &lt;4&gt; 静态文件和模板渲染">
+<meta property="og:url" content="http://yoursite.com/2018/09/06/造一个Flask-4-静态文件和模板渲染/index.html">
 <meta property="og:site_name" content="lijinhang">
+<meta property="og:description" content="flask对静态文件的处理依赖werkzeug提供的SharedDataMiddleware中间键，模板的渲染依赖jinja2提供的方法，都非常方便">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-09-08T07:04:10.418Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="lijinhang">
+<meta name="twitter:title" content="拆解Flask源码 -- &lt;4&gt; 静态文件和模板渲染">
+<meta name="twitter:description" content="flask对静态文件的处理依赖werkzeug提供的SharedDataMiddleware中间键，模板的渲染依赖jinja2提供的方法，都非常方便">
   
     <link rel="alternative" href="/atom.xml" title="lijinhang" type="application/atom+xml">
   
@@ -150,160 +155,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-造一个Flask-6-添加剩余功能，完善框架" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-造一个Flask-4-静态文件和模板渲染" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/07/造一个Flask-6-添加剩余功能，完善框架/">拆解Flask源码 -- &lt;6&gt; 添加剩余功能，完善框架</a>
-    </h1>
-  
-
-        
-        <a href="/2018/09/07/造一个Flask-6-添加剩余功能，完善框架/" class="archive-article-date">
-  	<time datetime="2018-09-07T12:16:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在之前几篇文章中我们已经基本完成了flask框架的核心功能，还剩下一些小功能，我们来完善它，由于不是特别复杂，所以直接给出代码，具体用法可以参考<a href="http://flask.pocoo.org/" target="_blank" rel="noopener">官方文档</a>：<br>
-        
-          <a class="article-more-a" href="/2018/09/07/造一个Flask-6-添加剩余功能，完善框架/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">flask</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-造一个Flask-5-消息闪现和url-for-方法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/07/造一个Flask-5-消息闪现和url-for-方法/">拆解Flask源码 -- &lt;5&gt; 消息闪现和url_for()方法</a>
-    </h1>
-  
-
-        
-        <a href="/2018/09/07/造一个Flask-5-消息闪现和url-for-方法/" class="archive-article-date">
-  	<time datetime="2018-09-07T11:14:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>flask提供了消息闪现机制便于在视图函数中为对应的模板传递消息，它的实现基于<code>session</code><br><code>url_for()</code>方法方便生成视图函数的url<br>
-        
-          <a class="article-more-a" href="/2018/09/07/造一个Flask-5-消息闪现和url-for-方法/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">flask</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-造一个Flask-4-静态文件和模板渲染" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/06/造一个Flask-4-静态文件和模板渲染/">拆解Flask源码 -- &lt;4&gt; 静态文件和模板渲染</a>
+    <h1 class="article-title" itemprop="name">
+      拆解Flask源码 -- &lt;4&gt; 静态文件和模板渲染
     </h1>
   
 
@@ -316,12 +175,42 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>flask对静态文件的处理依赖<code>werkzeug</code>提供的<code>SharedDataMiddleware</code>中间键，模板的渲染依赖<code>jinja2</code>提供的方法，都非常方便<br>
-        
-          <a class="article-more-a" href="/2018/09/06/造一个Flask-4-静态文件和模板渲染/#more">more >></a>
-        
+        <p>flask对静态文件的处理依赖<code>werkzeug</code>提供的<code>SharedDataMiddleware</code>中间键，模板的渲染依赖<code>jinja2</code>提供的方法，都非常方便<br><a id="more"></a><br>添加以下代码，这样它就有了处理静态文件的能力：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> werkzeug.wsgi <span class="keyword">import</span> SharedDataMiddleware</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="keyword">import</span> pkg_resources</span><br><span class="line"></span><br><span class="line">    pkg_resources.resource_stream</span><br><span class="line"><span class="keyword">except</span> (ImportError, AttributeError):</span><br><span class="line">    pkg_resources = <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_package_path</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">return</span> os.path.abspath(os.path.dirname(sys.modules[name].__file__))</span><br><span class="line">    <span class="keyword">except</span> (KeyError, AttributeError):</span><br><span class="line">        <span class="keyword">return</span> os.getcwd()</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SimpleFlask</span><span class="params">(object)</span>:</span></span><br><span class="line">    ...</span><br><span class="line">    static_path = <span class="string">'/static'</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, package_name)</span>:</span></span><br><span class="line"></span><br><span class="line">        self.package_name = package_name</span><br><span class="line"></span><br><span class="line">        self.root_path = _get_package_path(self.package_name)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.static_path <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">            self.url_map.add(Rule(self.static_path + <span class="string">'/&lt;filename&gt;'</span>,</span><br><span class="line">                                  build_only=<span class="keyword">True</span>, endpoint=<span class="string">'static'</span>))</span><br><span class="line">            <span class="keyword">if</span> pkg_resources <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">                target = (self.package_name, <span class="string">'static'</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                target = os.path.join(self.root_path, <span class="string">'static'</span>)</span><br><span class="line">            self.wsgi_app = SharedDataMiddleware(self.wsgi_app, &#123;  </span><br><span class="line">                self.static_path: target  </span><br><span class="line">            &#125;)</span><br></pre></td></tr></table></figure><br>在实例化<code>SimpleFlask</code>对象的时候，传入<code>package_name</code>参数，并将它传入<code>_get_package_path()</code>得到<code>root_path</code>，即项目根目录<br>接下来为我们添加了处理静态文件的视图函数，函数名为<code>static</code>，路径是<code>static_path</code>属性<br>最重要的一步，用<code>ShareDataMiddleware</code>封装了<code>wsgi_app</code>，这样每当请求进来时，调用的就是<code>ShareDataMiddleware</code>里的<code>__call__()</code>方法，它会判断请求是否是静态文件，如果是，就直接读取并处理返回静态文件，不经过<code>wsgi_app</code>，如果不是，就调用<code>wsgi_app</code></p>
+<h3 id="全局变量g"><a href="#全局变量g" class="headerlink" title="全局变量g"></a>全局变量g</h3><p>有时我们需要一个能被所有请求访问，在模板中也能使用的变量，又不想使用<code>session</code>，flask中的<code>g</code>就实现了这一功能</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_RequestGlobals</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_RequestContext</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, app, environ)</span>:</span></span><br><span class="line">        self.g = _RequestGlobals()</span><br><span class="line"></span><br><span class="line">g = LocalProxy(<span class="keyword">lambda</span>: _request_ctx_stack.top.g)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="模板渲染"><a href="#模板渲染" class="headerlink" title="模板渲染"></a>模板渲染</h3><p>添加以下代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> jinja2 <span class="keyword">import</span> Environment, FileSystemLoader, PackageLoader</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">render_template</span><span class="params">(template_name, **context)</span>:</span></span><br><span class="line">    current_app.update_template_context(context)</span><br><span class="line">    <span class="keyword">return</span> current_app.jinja_env.get_template(template_name).render(context)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">render_template_string</span><span class="params">(source, **context)</span>:</span></span><br><span class="line">    current_app.update_template_context(context)</span><br><span class="line">    <span class="keyword">return</span> current_app.jinja_env.from_string(source).render(context)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_default_template_ctx_processor</span><span class="params">()</span>:</span></span><br><span class="line">    reqctx = _request_ctx_stack.top</span><br><span class="line">    <span class="keyword">return</span> dict(</span><br><span class="line">        request=reqctx.request,</span><br><span class="line">        session=reqctx.session,</span><br><span class="line">        g=reqctx.g</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SimpleFlask</span><span class="params">(object)</span>:</span></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    jinja_options = dict(</span><br><span class="line">        autoescape=<span class="keyword">True</span>,  <span class="comment"># 默认开启自动转义，即转义不安全字符为HTML实体，比如“&gt;”、“&lt;”等。</span></span><br><span class="line">        extensions=[<span class="string">'jinja2.ext.autoescape'</span>, <span class="string">'jinja2.ext.with_'</span>]</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, package_name)</span>:</span></span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">        self.template_context_processors = [</span><br><span class="line">            _default_template_ctx_processor]</span><br><span class="line"></span><br><span class="line">        self.jinja_env = Environment(loader=self.create_jinja_loader(),</span><br><span class="line">                                     **self.jinja_options)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">create_jinja_loader</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> pkg_resources <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">            <span class="keyword">return</span> FileSystemLoader(os.path.join(self.root_path, <span class="string">'templates'</span>))</span><br><span class="line">        <span class="keyword">return</span> PackageLoader(self.package_name)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update_template_context</span><span class="params">(self, context)</span>:</span></span><br><span class="line">        reqctx = _request_ctx_stack.top</span><br><span class="line">        <span class="keyword">for</span> func <span class="keyword">in</span> self.template_context_processors:</span><br><span class="line">            context.update(func())</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">context_processor</span><span class="params">(self, f)</span>:</span></span><br><span class="line">        self.template_context_processors.append(f)</span><br><span class="line">        <span class="keyword">return</span> f</span><br><span class="line"></span><br><span class="line">current_app = LocalProxy(<span class="keyword">lambda</span>: _request_ctx_stack.top.app)</span><br></pre></td></tr></table></figure>
+<p>在实例化<code>SimpleFlask</code>的时候，通过<code>Environment()</code>创建<code>jinja</code>环境，接受两个参数：模板文件位置<code>loader</code>，由<code>create_jinja_loader()</code>方法实现；字典参数，模板的相关配置，在<code>jinja_options</code>里面指定<br>提供了<code>render_template()</code>和<code>render_template_str()</code>为渲染模板的时候调用，区别是一个传入模板文件名，另一个传入模板源代码。它们在执行的时候都会调用<code>update_template_context()</code>方法，将<code>request</code>,<code>session</code>,<code>g</code>传入模板便于在需要的时候调用<br><code>context_processor()</code>装饰器，可以向<code>template_context_processors</code>中添加方法，在渲染模板前执行</p>
+<p>所有代码都已放到github上：<br><code>https://github.com/jinhgg/simple-flask</code><br>你可以通过以下代码签出此小节代码：<br><code>git checkout v4.0</code></p>
+
       
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/img/alipay.png">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -343,10 +232,82 @@
       
 
       
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/09/06/造一个Flask-4-静态文件和模板渲染/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2018/09/07/造一个Flask-5-消息闪现和url-for-方法/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          拆解Flask源码 -- &lt;5&gt; 消息闪现和url_for()方法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/09/05/造一个Flask-3-钩子函数和session机制/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">拆解Flask源码 -- &lt;3&gt; 钩子函数和session机制</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -361,310 +322,32 @@
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-造一个Flask-3-钩子函数和session机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/05/造一个Flask-3-钩子函数和session机制/">拆解Flask源码 -- &lt;3&gt; 钩子函数和session机制</a>
-    </h1>
-  
-
-        
-        <a href="/2018/09/05/造一个Flask-3-钩子函数和session机制/" class="archive-article-date">
-  	<time datetime="2018-09-05T08:56:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="钩子函数"><a href="#钩子函数" class="headerlink" title="钩子函数"></a>钩子函数</h3><p>在Flask中钩子函数是使用特定的装饰器的函数。为什么叫做钩子函数呢，是因为钩子函数可以在正常执行的代码中，插入一段自己想要执行的代码，那么这种函数就叫做钩子函数<br>先来介绍flask初代版中这几个钩子函数：</p>
-<ul>
-<li><code>before_reques</code>:在视图函数执行之前执行</li>
-<li><code>after_request</code>:在视图函数执行之后执行</li>
-<li><code>errorhander</code>:发生特定错误时执行</li>
-</ul>
-        
-          <a class="article-more-a" href="/2018/09/05/造一个Flask-3-钩子函数和session机制/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">flask</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#全局变量g"><span class="toc-number">1.</span> <span class="toc-text">全局变量g</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模板渲染"><span class="toc-number">2.</span> <span class="toc-text">模板渲染</span></a></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
   
-    <article id="post-造一个Flask-2-视图函数和请求处理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/03/造一个Flask-2-视图函数和请求处理/">拆解Flask源码 -- &lt;2&gt; 视图函数和请求处理</a>
-    </h1>
   
 
-        
-        <a href="/2018/09/03/造一个Flask-2-视图函数和请求处理/" class="archive-article-date">
-  	<time datetime="2018-09-03T11:51:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>先为SimpleFlask添加几个属性和方法，添加视图函数需要用到<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> werkzeug.routing <span class="keyword">import</span> Rule, Map</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SimpleFlask</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.url_map = Map() </span><br><span class="line">        self.view_functions = &#123;&#125; </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_url_rule</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">route</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure><br>
-        
-          <a class="article-more-a" href="/2018/09/03/造一个Flask-2-视图函数和请求处理/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">flask</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-造一个Flask-1-让application跑起来" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/03/造一个Flask-1-让application跑起来/">拆解Flask源码 -- &lt;1&gt; 让application跑起来</a>
-    </h1>
   
 
-        
-        <a href="/2018/09/03/造一个Flask-1-让application跑起来/" class="archive-article-date">
-  	<time datetime="2018-09-03T08:46:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="依赖说明"><a href="#依赖说明" class="headerlink" title="依赖说明"></a>依赖说明</h3><p>为了配合flask初代版本，接下来的示例程序都使用了<code>python2.7</code><br><code>werkzeug</code>和<code>jinja2</code>对应的版本分别为<code>0.6.1</code>和<code>2.4</code><br>
-        
-          <a class="article-more-a" href="/2018/09/03/造一个Flask-1-让application跑起来/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">flask</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-造一个Flask-0-首先谈谈wsgi" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/造一个Flask-0-首先谈谈wsgi/">拆解Flask源码 -- &lt;0&gt; 首先谈谈WSGI</a>
-    </h1>
   
 
-        
-        <a href="/2018/08/29/造一个Flask-0-首先谈谈wsgi/" class="archive-article-date">
-  	<time datetime="2018-08-29T07:22:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近读了flask框架的源码收获很多，我认为彻底掌握一个框架的最好方法是造一个和它一模一样的，所以我打算用一系列文章，拆解并重组flask，从一个简单的请求处理开始，逐步实现flask（初代版本）的所有功能。<br>flask的核心部分是<code>Flask</code>类，它是符合wsgi规范的application，在正式造flask之前，需要了解什么是WSGI<br>
-        
-          <a class="article-more-a" href="/2018/08/29/造一个Flask-0-首先谈谈wsgi/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Flask</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">wsgi</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
 
 
@@ -687,8 +370,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
